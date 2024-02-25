@@ -1,0 +1,132 @@
+console.log('Notion Roll script is loaded');
+
+window.onload = function () {
+  console.log('Page has finished loading');
+  var observer = new MutationObserver(function (mutations) {
+    console.log('Mutation observer created');
+    mutations.forEach(function (mutation) {
+      console.log('Mutation detected:', mutation);
+      if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+        console.log('Mutation has added nodes. Iterating over them...');
+        // check if tables have been added to the page
+        var tablesAdded = false;
+
+        function checkForTablesRecursive(nodes) {
+          for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            console.log('Node ', i, ' is for ', node);
+            if (node.classList && node.classList.contains('notion-table-view')) {
+              console.log('...this node is a table');
+              tablesAdded = true;
+              break;
+            } else if (node.childNodes && node.childNodes.length > 0) {
+              // Recursively check child nodes
+              checkForTablesRecursive(node.childNodes);
+            }
+          }
+        }
+
+        checkForTablesRecursive(mutation.addedNodes);
+        if (tablesAdded) {
+          console.log('A table was found. Proceeding with adding a button...');
+          checkForTables();
+        }
+      }
+    });
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+};
+
+
+function checkForTables() {
+    var tables = document.getElementsByClassName('notion-table-view');
+    console.log('Tables: ', tables.length);
+    if (tables.length > 0) {
+        for (var i = 0; i < tables.length; i++) {
+            var table = tables[i];
+            var controlsRow = getControlsRow(table);
+            if (!controlsRow.querySelector('.notion-random-line-button')) {
+                console.log('Adding button for table with ID:', table.getAttribute('data-block-id'));
+                var button = createButton(table);
+                controlsRow.appendChild(button);
+            }
+        }
+    }
+}
+
+function getControlsRow(table) {
+    // TODO: check why this doesn't work with side-peek and full-width tables
+    // var container = table.closest('div[contenteditable]').parentNode.querySelector('div[contentEditable]');
+    // return container.childNodes[0].childNodes[0].childNodes[1];
+    var container = table.parentNode.parentNode.parentNode;
+    return container.previousElementSibling.childNodes[0].childNodes[0].childNodes[1];
+}
+
+
+function createButton(table) {
+    var button = document.createElement('button');
+    button.innerHTML = 'Random Line';
+    button.classList.add('notion-random-line-button');
+
+    var newRowButton = document.querySelector('.notion-collection-view-item-add').firstElementChild;
+    copyStyles(newRowButton, button);
+    button.style.backgroundColor = 'green';
+
+    button.addEventListener('click', function(event) {
+        buttonClickHandler(event, table);
+    });
+    button.addEventListener('mouseenter', handleMouseEnter);
+    button.addEventListener('mouseleave', handleMouseLeave);
+
+    return button;
+}
+
+
+function copyStyles(source, target) {
+    var sourceStyle = window.getComputedStyle(source);
+    var propertiesToCopy = ['fontFamily',
+                                    'fontSize',
+                                    'padding',
+                                    'margin',
+                                    'lineHeight',
+                                    'height',
+                                    'backgroundColor',
+                                    'border'];
+    propertiesToCopy.forEach(function(property) {
+        target.style[property] = sourceStyle[property];
+    });
+    target.style.borderRadius = sourceStyle.borderTopLeftRadius;
+}
+
+
+function buttonClickHandler(event, table) {
+    console.log('Button clicked');
+    rows = getRows(table);
+    console.log(rows);
+    console.log('Found rows:', rows.length);
+    var row_idx = Math.floor(Math.random() * rows.length);
+    console.log('Row index generated:', row_idx);
+    var row = rows[row_idx];
+    console.log(row);
+    var checkbox = row.querySelector('input[type="checkbox"]');
+    checkbox.click();
+}
+
+
+function getRows(table) {
+    return table.childNodes[0].childNodes[2].querySelectorAll('.notion-selectable.notion-page-block.notion-collection-item');
+}
+
+
+function handleMouseEnter(event) {
+    event.target.style.backgroundColor = '#006000';
+}
+
+
+function handleMouseLeave(event) {
+    event.target.style.backgroundColor = 'green';
+}

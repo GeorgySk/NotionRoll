@@ -9,27 +9,10 @@ window.addEventListener('load', function () {
       if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
         console.log('Mutation has added nodes. Iterating over them...');
         // check if tables have been added to the page
-        var tablesAdded = false;
-
-        function checkForTablesRecursive(nodes) {
-          for (var i = 0; i < nodes.length; i++) {
-            var node = nodes[i];
-            console.log('Node ', i, ' is for ', node);
-            if (node.classList && node.classList.contains('notion-table-view')) {
-              console.log('...this node is a table');
-              tablesAdded = true;
-              break;
-            } else if (node.childNodes && node.childNodes.length > 0) {
-              // Recursively check child nodes
-              checkForTablesRecursive(node.childNodes);
-            }
-          }
-        }
-
-        checkForTablesRecursive(mutation.addedNodes);
+        const tablesAdded = checkForTablesRecursive(mutation.addedNodes);
         if (tablesAdded) {
           console.log('A table was found. Proceeding with adding a button...');
-          checkForTables();
+          handleAddedTables();
         }
       }
     });
@@ -42,7 +25,24 @@ window.addEventListener('load', function () {
 });
 
 
-function checkForTables() {
+function checkForTablesRecursive(nodes) {
+  let tablesAdded = false;
+  nodes.forEach(function (node) {
+    console.log('Node is: ', node);
+    if (node.nodeType === 1) {
+      if (node.classList.contains('notion-table-view')) {
+        console.log('...this node is a table');
+        tablesAdded = true;
+      } else if (node.childNodes.length > 0) {
+        tablesAdded = checkForTablesRecursive(node.childNodes) || tablesAdded;
+      }
+    }
+  });
+  return tablesAdded;
+}
+
+
+function handleAddedTables() {
     var tables = document.getElementsByClassName('notion-table-view');
     console.log('Tables: ', tables.length);
     if (tables.length > 0) {

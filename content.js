@@ -1,4 +1,4 @@
-console.log('Notion Roll script is loaded');
+console.log('NotionRoll script is loaded');
 
 window.addEventListener('load', function () {
   console.log('Page has finished loading');

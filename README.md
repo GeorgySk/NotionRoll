@@ -2,7 +2,7 @@
 
 A Google Chrome extension that adds a button to Notion's table views for selecting a random record.
 
-Example:
+Example:  
 ![example.png](example.png)
 
 ### How to add the extension:

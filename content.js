@@ -1,6 +1,6 @@
 console.log('Notion Roll script is loaded');
 
-window.onload = function () {
+window.addEventListener('load', function () {
   console.log('Page has finished loading');
   var observer = new MutationObserver(function (mutations) {
     console.log('Mutation observer created');
@@ -39,7 +39,7 @@ window.onload = function () {
     childList: true,
     subtree: true,
   });
-};
+});
 
 
 function checkForTables() {

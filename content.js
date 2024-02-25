@@ -59,11 +59,13 @@ function checkForTables() {
 }
 
 function getControlsRow(table) {
-    // TODO: check why this doesn't work with side-peek and full-width tables
-    // var container = table.closest('div[contenteditable]').parentNode.querySelector('div[contentEditable]');
-    // return container.childNodes[0].childNodes[0].childNodes[1];
-    var container = table.parentNode.parentNode.parentNode;
-    return container.previousElementSibling.childNodes[0].childNodes[0].childNodes[1];
+    var container = table.closest('div[contenteditable]').parentNode;
+    for (var i = 0; i < container.children.length; i++) {
+        var element = container.children[i];
+        if (element && element.contentEditable !== undefined && element.contentEditable === 'false') {
+            return element.childNodes[0].childNodes[0].childNodes[1];
+        }
+    }
 }
 
 
@@ -105,7 +107,7 @@ function copyStyles(source, target) {
 
 function buttonClickHandler(event, table) {
     console.log('Button clicked');
-    rows = getRows(table);
+    var rows = getRows(table);
     console.log(rows);
     console.log('Found rows:', rows.length);
     var row_idx = Math.floor(Math.random() * rows.length);

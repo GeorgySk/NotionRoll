@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "NotionRoll",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Chrome extension that adds a button to Notion tables allowing selection of a random line",
   "icons": {
     "16": "icon-16.png",

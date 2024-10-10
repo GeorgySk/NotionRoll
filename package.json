@@ -1,0 +1,13 @@
+{
+  "name": "notion_roll",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "tsx": "^4.19.1",
+    "@types/chrome": "^0.0.207"
+  }
+}

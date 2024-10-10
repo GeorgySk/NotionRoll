@@ -60,11 +60,20 @@ function handleAddedTables(): void {
 }
 
 function getControlsRow(table: HTMLElement): HTMLElement {
-    const container = table.closest('div[contenteditable]')!.parentNode as HTMLElement;
+    const container = table.closest('div[contenteditable]')?.parentNode as HTMLElement;
+    if (!container) {
+        throw new Error('Container not found');
+    }
     for (let i = 0; i < container.children.length; i++) {
         const element = container.children[i] as HTMLElement;
         if (element && element.contentEditable !== undefined && element.contentEditable === 'false') {
-            return element.childNodes[0].childNodes[0].childNodes[1] as HTMLElement;
+            const firstChild = element.childNodes[0] as HTMLElement;
+            if (firstChild && firstChild.childNodes.length > 0) {
+                const secondChild = firstChild.childNodes[0] as HTMLElement;
+                if (secondChild && secondChild.childNodes.length > 1) {
+                    return secondChild.childNodes[1] as HTMLElement;
+                }
+            }
         }
     }
     throw new Error('Controls row not found');

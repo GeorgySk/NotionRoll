@@ -121,7 +121,9 @@ function buttonClickHandler(event: Event, table: HTMLElement): void {
 
 
 function getRows(table: HTMLElement): NodeListOf<HTMLElement> {
-    return table.childNodes[0].childNodes[2].querySelectorAll('.notion-selectable.notion-page-block.notion-collection-item');
+    const firstChild = table.childNodes[0] as HTMLElement;
+    const secondChild = firstChild.childNodes[2] as HTMLElement;
+    return secondChild.querySelectorAll('.notion-selectable.notion-page-block.notion-collection-item') as NodeListOf<HTMLElement>;
 }
 
 

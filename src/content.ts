@@ -67,7 +67,11 @@ function getControlsRow(table: HTMLElement): HTMLElement {
     for (let i = 0; i < container.children.length; i++) {
         const element = container.children[i] as HTMLElement;
         if (element && element.contentEditable !== undefined && element.contentEditable === 'false') {
-            const firstChild = element.childNodes[0] as HTMLElement;
+            let firstChild = element.childNodes[0] as HTMLElement;
+            // Full-page tables have an empty div as the first child that should be skipped
+            if (firstChild && firstChild.tagName === 'DIV' && firstChild.innerHTML.trim() === '') {
+                firstChild = element.childNodes[1] as HTMLElement;
+            }
             if (firstChild && firstChild.childNodes.length > 0) {
                 const secondChild = firstChild.childNodes[0] as HTMLElement;
                 if (secondChild && secondChild.childNodes.length > 1) {

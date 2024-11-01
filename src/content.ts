@@ -134,9 +134,11 @@ function buttonClickHandler(event: Event, table: HTMLElement): void {
 
 
 function getRows(table: HTMLElement): NodeListOf<HTMLElement> {
-    const firstChild = table.childNodes[0] as HTMLElement;
-    const secondChild = firstChild.childNodes[2] as HTMLElement;
-    return secondChild.querySelectorAll('.notion-selectable.notion-page-block.notion-collection-item') as NodeListOf<HTMLElement>;
+    const container = table.querySelector('.notion-selectable.notion-collection_view-block') as HTMLElement;
+    if (!container) {
+        console.error('Container with class "notion-selectable notion-collection_view-block" not found');
+    }
+    return container.querySelectorAll('.notion-selectable.notion-page-block.notion-collection-item');
 }
 
 

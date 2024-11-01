@@ -1,0 +1,9 @@
+services:
+  notion_roll:
+    build: .
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./dist:/usr/src/app/dist
+      - ./tsconfig.json:/usr/src/app/tsconfig.json
+    command: npx tsc --watch
+    working_dir: /usr/src/app
